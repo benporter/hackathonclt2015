@@ -1,18 +1,18 @@
 # HackathonCLT 2015
 
-1st Place submission to <a href="http://www.hackathonclt.org/">HackathonCLT 2015</a> with my wife, Neli.
+**1st Place submission to <a href="http://www.hackathonclt.org/">HackathonCLT 2015</a> with my wife, Neli.**
 
-Code Overview:
+**Code Overview:**
 
   - hive.txt:  have and bash commands run from the console to extract data
   - ShinyApp.R:  a standalone Shiny Application using R, with a dash of javascript for extra functionality.
 
-General flow of the analysis:
+**General flow of the analysis:**
   - Create summarized datasets or samples using Hive. (hive.txt)
   - Pull those datatsets out of HDFS, and download them locally (hive.txt)
   - Use R to munge data, Shiny and rCharts/ggplot to visualize data (ShinyApp.R)
 
-The flow of the presentation:
+**The flow of the presentation:**
 
 Find the right store to start with:
 
