@@ -1,55 +1,49 @@
+# start with basic stats
 
-
-204.15.96.216
-204.15.96.217
-204.15.96.218
-204.15.96.219
-
-204.15.96.215 hackaton-master.datachambers.com
-
-
-#queries run:
-
-
+# Determine how many customers have used the Express Lane over the last 6 months
 select count(distinct customer) from hackathon where onlineFlag=1;
 9269
 
+# list out all of the days available in the dataset
+select distinct TO_DATE(datetime) from hackathon;
+181 days
+
 # Calcuation 1 - store table
-#hive
+# hive
 create table calc1 row format delimited fields terminated by '|' stored as textfile as select store, count(distinct receipt) , count(distinct customer), sum(onlineFlag*quantity) , sum(quantity), count(distinct upc), sum(sales), sum(discount) from hackathon group by store;
-#bash
+
+# bash - extract the data from HDFS
 hadoop fs -text /user/hive/warehouse/calc1/*.snappy > calctext
 #hive
 drop table calc1;
 
 # Calcuation 2 - store/customer table
 # changing this from store to homeStore bought it from 1.4M to 473K rows
-#hive
+# hive
 create table calc2 row format delimited fields terminated by '|' stored as textfile as select homeStore, customer, tier,  sum(sales), sum(discount), max(onlineFlag) from hackathon group by homeStore, customer , tier;
-#bash
+# bash - extract the data from HDFS
 hadoop fs -text /user/hive/warehouse/calc2/*.snappy > calctext2
 
 
 # Calculation 3 - Products
 # go for the 217 people that are tier=1 and have used online at least once
-#hive
+# hive
 # drop table calc3;
-#hive
+# hive
 create table calc3 row format delimited fields terminated by '|' stored as textfile as select distinct customer from hackathon where homeStore = 160 and tier = 1 and onlineflag = 1;
-# Moving data to: hdfs://hackaton-master.datachambers.com:8020/user/hive/warehouse/calc3
-# Table default.calc3 stats: [numFiles=40, numRows=217, totalSize=9375, rawDataSize=8680]
 
-#hive
+
+# hive
 create table calc4 row format delimited fields terminated by '|' stored as textfile as select hackathon.* from hackathon inner join calc3 on hackathon.customer=calc3.customer;
 
-#bash
+# bash - extract the data from HDFS
 hadoop fs -text /user/hive/warehouse/calc4/*.snappy > calctext4
 
-#on local machine:
-scp user84@204.15.96.217:/home/user84/calctext /home/ben/Hackathon/HackathonCLT2015/data/calc1
-scp user84@204.15.96.217:/home/user84/calctext2 /home/ben/Hackathon/HackathonCLT2015/data/calc2
-scp user84@204.15.96.217:/home/user84/calctext4 /home/ben/Hackathon/HackathonCLT2015/data/calc3
+# download the data
+# bash - run on local machine:
+scp user84@<ip-address>:/home/user84/calctext /home/ben/Hackathon/HackathonCLT2015/data/calc1
+scp user84@<ip-address>:/home/user84/calctext2 /home/ben/Hackathon/HackathonCLT2015/data/calc2
+scp user84@<ip-address>:/home/user84/calctext4 /home/ben/Hackathon/HackathonCLT2015/data/calc3
 
-select distinct TO_DATE(datetime) from hackathon;
-181 days
+
 
